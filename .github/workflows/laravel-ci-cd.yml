@@ -68,8 +68,9 @@ jobs:
 
             cd ${{ secrets.APP_PATH }}
 
-            echo "Pulling latest code..."
-            git pull origin main
+            echo "Syncing code..."
+            git fetch origin 
+            git reset --hard origin/main
 
             echo "Installing dependencies..."
             composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
