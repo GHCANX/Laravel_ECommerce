@@ -10,15 +10,6 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
-    services:
-      sqlite:
-        image: nouchka/sqlite3
-        options: >-
-          --health-cmd "sqlite3 --version"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,7 +19,6 @@ jobs:
         with:
           php-version: '8.4'
           extensions: mbstring, pdo, pdo_sqlite, sqlite3, openssl, tokenizer, ctype, fileinfo
-          ini-values: post_max_size=256M, upload_max_filesize=256M
           coverage: none
 
       - name: Install system dependencies
@@ -36,20 +26,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y sqlite3
 
-      - name: Copy environment file
-        run: |
-          cp .env.example .env
-          php artisan key:generate
-
-      - name: Configure SQLite database
-        run: |
-          mkdir -p database
-          touch database/database.sqlite
-
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
-      - name: Run database migrations
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          mkdir -p database
+          touch database/database.sqlite
+
+      - name: Run migrations
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
