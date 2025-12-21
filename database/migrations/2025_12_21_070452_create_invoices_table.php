@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB; 
+
+class CreateInvoicesTable extends Migration {
+
+	public function up()
+	{
+		Schema::create('invoices', function(Blueprint $table) {
+            $table->id();
+			$table->uuid('uuid')->unique();
+            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
+			$table->string('status', 30)->index()->default('draft');
+			$table->string('deposit_address', 106)->unique()->nullable();
+			$table->decimal('total_usd', 8,2);
+			$table->decimal('total_xmr',36,12)->nullable();
+			$table->softDeletes();
+			$table->timestamps();
+		});
+	}
+
+	public function down()
+	{
+if (Schema::getConnection()->getDriverName() === 'sqlite') {
+    DB::statement('PRAGMA foreign_keys = OFF;'); // temporarily disable FK checks
+	}		
+		Schema::drop('invoices');
+		if (Schema::getConnection()->getDriverName() === 'sqlite') {
+    DB::statement('PRAGMA foreign_keys = ON;'); // re-enable FK checks
+}
+	}
+}
