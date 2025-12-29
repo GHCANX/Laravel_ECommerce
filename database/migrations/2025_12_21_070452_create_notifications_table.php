@@ -8,17 +8,19 @@ class CreateNotificationsTable extends Migration {
 
 	public function up()
 	{
-		Schema::create('notifications', function(Blueprint $table) {
-            $table->id();
-			$table->uuid('uuid')->unique();
-			$table->string('type',20)->index();
+		Schema::create('notifications', function (Blueprint $table) {
+			$table->uuid('id')->primary(); // REQUIRED by Laravel
+			$table->string('type')->index();
 			$table->morphs('notifiable');
-			$table->text('data');
+
+			// Your extensions
+			$table->string('source', 30)->index(); // message, order, payment, system
+			$table->uuid('source_uuid')->nullable()->index(); // public-safe reference
+
+			$table->json('data');
 			$table->timestamp('read_at')->nullable()->index();
-			$table->softDeletes();
 			$table->timestamps();
-		});
-	}
+		});	}
 
 	public function down()
 	{

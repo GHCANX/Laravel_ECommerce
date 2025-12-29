@@ -14,7 +14,7 @@ class CreateOrderlinesTable extends Migration {
 			$table->uuid('uuid')->unique();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_id')->constrained();
-			$table->decimal('quantity', 8,2);
+			$table->decimal('quantity', 8,3);
 			$table->decimal('rate', 8,2);
 			$table->decimal('subtotal', 8,2);
 			$table->softDeletes();

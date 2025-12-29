@@ -23,12 +23,12 @@ class CreateMessagesTable extends Migration {
 
 	public function down()
 	{
-if (Schema::getConnection()->getDriverName() === 'sqlite') {
-    DB::statement('PRAGMA foreign_keys = OFF;'); // temporarily disable FK checks
-}
-		Schema::drop('messages');
 		if (Schema::getConnection()->getDriverName() === 'sqlite') {
-    DB::statement('PRAGMA foreign_keys = ON;'); // re-enable FK checks
-}
+			DB::statement('PRAGMA foreign_keys = OFF;'); // temporarily disable FK checks
+		}
+				Schema::drop('messages');
+				if (Schema::getConnection()->getDriverName() === 'sqlite') {
+			DB::statement('PRAGMA foreign_keys = ON;'); // re-enable FK checks
+		}
 	}
 }

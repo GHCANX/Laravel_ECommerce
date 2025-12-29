@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB; 
 
 class CreateCountriesTable extends Migration {
 
@@ -19,6 +20,13 @@ class CreateCountriesTable extends Migration {
 
 	public function down()
 	{
+        if (Schema::getConnection()->getDriverName() === 'sqlite') {
+        DB::statement('PRAGMA foreign_keys = OFF;');
+        }
 		Schema::drop('countries');
+        if (Schema::getConnection()->getDriverName() === 'sqlite') {
+        DB::statement('PRAGMA foreign_keys = ON;');
+        }
+
 	}
 }
